@@ -28,7 +28,8 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    style.h
 
 RESOURCES += \
     res/res.qrc
@@ -37,3 +38,4 @@ RESOURCES += \
 include(./Utils/Utils.pri)
 include(./View/View.pri)
 include(./3rdparty/3rdparty.pri)
+include(./Recorder/Recorder.pri)

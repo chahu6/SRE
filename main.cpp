@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
     QString vInfo = QString("SRE V%1").arg(QCoreApplication::applicationVersion());
 
     qDebug() << vInfo;
-//    QLOG_INFO() << vInfo;
+    QLOG_INFO() << vInfo;
 
     MainWindow mainWindow;
     mainWindow.show();
