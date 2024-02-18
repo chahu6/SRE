@@ -3,10 +3,10 @@
 
 #include <QWidget>
 
-QT_BEGIN_NAMESPACE;
+QT_BEGIN_NAMESPACE
 class QVBoxLayout;
 class QLabel;
-QT_END_NAMESPACE;
+QT_END_NAMESPACE
 
 class PreviewPlayer : public QWidget
 {

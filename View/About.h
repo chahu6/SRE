@@ -3,7 +3,9 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
 class QVBoxLayout;
+QT_END_NAMESPACE
 
 class About : public QDialog
 {

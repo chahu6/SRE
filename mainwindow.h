@@ -4,9 +4,12 @@
 #include <QMainWindow>
 #include <QDateTime>
 
+QT_BEGIN_NAMESPACE
 class QVBoxLayout;
 class QPushButton;
 class QLabel;
+QT_END_NAMESPACE
+
 class Recorder;
 class PreviewPlayer;
 
