@@ -6,9 +6,15 @@
 #include <QTimer>
 #include <QLabel>
 #include <QMenuBar>
+#include <QUrl>
+#include <QDesktopServices>
+#include <QMessageBox>
+#include <QApplication>
 
 #include "Recorder.h"
 #include "Settings.h"
+#include "constant.h"
+#include "About.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -62,10 +68,46 @@ void MainWindow::initMenu()
         Settings dlg(this);
         dlg.exec();
     });
+    QAction* logoutAct = fileMenu->addAction("退出");
+    logoutAct->setShortcut(QKeySequence::Quit);
+    connect(logoutAct, &QAction::triggered, this, [this]()
+    {
+        switch (QMessageBox::information(this, "提示", "确定要退出吗？", "确定", "取消", 0))
+        {
+            case 0:
+                QLOG_INFO() << "logout";
+                QApplication* app;
+                app->quit();
+                break;
+            default:
+                break;
+        }
+    });
     fileMenu->addAction(settingsAct);
     fileMenu->addSeparator();
+    fileMenu->addAction(logoutAct);
+
+
+    // 帮助菜单
+    QMenu* helpMenu = new QMenu(tr("&帮助"));
+    QAction* aboutAct = helpMenu->addAction("关于");
+    aboutAct->setShortcut(QKeySequence::Preferences);
+    connect(aboutAct, &QAction::triggered, this, [this]()
+    {
+        About dlg(this);
+        dlg.exec();
+    });
+    QAction* feedbackAct = helpMenu->addAction("反馈");
+    connect(feedbackAct, &QAction::triggered, this, []()
+    {
+        QDesktopServices::openUrl(QUrl(URL_FEEDBACK));
+    });
+    helpMenu->addAction(aboutAct);
+    helpMenu->addSeparator();
+    helpMenu->addAction(feedbackAct);
 
     menuBar()->addMenu(fileMenu);
+    menuBar()->addMenu(helpMenu);
 }
 
 void MainWindow::initUI()

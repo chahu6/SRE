@@ -1,7 +1,8 @@
 HEADERS += \
     $$PWD/ComMessageBox.h \
     $$PWD/Utils.h \
-    $$PWD/ComLineWidget.h
+    $$PWD/ComLineWidget.h \
+    $$PWD/constant.h
 
 SOURCES += \
     $$PWD/ComMessageBox.cpp \
