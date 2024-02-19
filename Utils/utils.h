@@ -7,7 +7,7 @@ struct Utils
 {
     static int64_t getCurTimestamp()
     {
-
+        return 0;
     }
 
     static bool mkDirs(QString dirPath)

@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent)
     setAttribute(Qt::WA_StyledBackground, true);
     setStyleSheet(QString(".MainWindow{background-color:%1;}").arg("rgb(246,247,251)"));
 
-    QString title = QString("SRE V%1 (64-bit, windows)").arg(QCoreApplication::applicationVersion());
+    QString title = QString("SRE V%1 (32-bit, windows)").arg(QCoreApplication::applicationVersion());
     setWindowTitle(title);
 
     QList<QScreen*> screens = QGuiApplication::screens(); // 获取到多个屏幕

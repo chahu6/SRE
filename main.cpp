@@ -5,7 +5,6 @@
 #include <windows.h>
 #endif
 
-#include <QApplication>
 #include <QSharedMemory>
 #include <QDebug>
 #include <QsLog.h>
@@ -55,7 +54,7 @@ int main(int argc, char *argv[])
     SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)ApplicationCrashHandler);
 
 #if(QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
-    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(QT::HighDpiScaleFactorRoundingPolicy::Floor);
+    QGuiApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
 #elif(QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);

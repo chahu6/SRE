@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <thread>
+#include <atomic>
 
 class FFmpegEncoder;
 
@@ -22,10 +23,10 @@ private:
     static void run_thread(void* arg);
 
 private:
-    FFmpegEncoder* m_Encoder;
+    FFmpegEncoder* mEncoder;
     bool bIsRecording = false;
-    bool bIsStop = true;
-    std::thread* m_Thread;
+    std::atomic<bool> bIsStop{true};
+    std::thread* mThread;
 
 signals:
 
