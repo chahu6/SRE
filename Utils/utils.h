@@ -1,13 +1,16 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <chrono>
 #include <QDir>
 
 struct Utils
 {
     static int64_t getCurTimestamp()
     {
-        return 0;
+        return std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch())
+            .count();
     }
 
     static bool mkDirs(QString dirPath)

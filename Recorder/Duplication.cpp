@@ -1,5 +1,6 @@
 #include "Duplication.h"
 #include <iostream>
+#include <QDebug>
 
 Duplication::Duplication()
     : m_DeskDupl(nullptr),
@@ -58,7 +59,13 @@ bool Duplication::GetFrame(int timeout)
     DesktopResource = nullptr;
     if(FAILED(hr))
     {
-        return true;
+        return false;
+    }
+
+    if (m_AcquiredDesktopImage == nullptr)
+    {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "m_AcquiredDesktopImage is  nullptr";
+        return false;
     }
 
     return true;
@@ -73,8 +80,12 @@ bool Duplication::copyFrameDataToBuffer(uint8_t* buffer, int bufferSize, int& wi
     D3D11_TEXTURE2D_DESC desc;
     m_AcquiredDesktopImage->GetDesc(&desc);
 
+    // 在这段代码所在的上下文中，程序通过 m_AcquiredDesktopImage 获取了一个桌面图像的纹理资源。然而，该纹理资源可能拥有不同的使用标志和访问标志，可能不适合直接用于后续的处理和操作。
+    // 因此，需要创建一个新的纹理资源，该纹理资源与 m_AcquiredDesktopImage 具有相同的尺寸和格式，但使用的标志和访问标志更适合后续的处理和操作。在这段代码中，新的纹理资源使用了 D3D11_USAGE_STAGING 和 D3D11_CPU_ACCESS_READ 标志，这意味着它是一个 CPU 可读的、需要在 CPU 上进行读取和写入的纹理资源。
+    // 通过创建一个新的纹理，可以确保后续的处理和操作不会影响原始的 m_AcquiredDesktopImage 纹理资源，同时也可以提高处理和操作的效率和性能。
     ID3D11Texture2D* destImage = nullptr;
     D3D11_TEXTURE2D_DESC desc2;
+
     desc2.Width = desc.Width;
     desc2.Height = desc.Height;
     desc2.MipLevels = desc.MipLevels;
@@ -82,15 +93,25 @@ bool Duplication::copyFrameDataToBuffer(uint8_t* buffer, int bufferSize, int& wi
     desc2.Format = desc.Format;
     desc2.SampleDesc = desc.SampleDesc;
     desc2.Usage = D3D11_USAGE_STAGING;
-    desc2.BindFlags = 0;
     desc2.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+    desc2.BindFlags = 0;
     desc2.MiscFlags = 0;
+    // desc2.MipLevels = 1;
+    // desc2.ArraySize = 1;
+    // desc2.SampleDesc.Count = 1;
+
     //不能直接使用m_AquiredDesktopImage的desc描述信息,需要拷贝一个
     hr = m_Device->CreateTexture2D(&desc2, nullptr, &destImage);
     if (FAILED(hr)) {
         return false;
     }
 
+    if(destImage == nullptr)
+    {
+        return false;
+    }
+
+    /* 将图像数据从显存中拷贝到内存中 */
     context->CopyResource(destImage, m_AcquiredDesktopImage);//源Texture2D和目的Texture2D需要有相同的多重采样计数和质量时（就是一些属性相同）
     //所以目的纹理对象应该初始化设置，使用m_AcquiredDesktopImage的描述信息来创建纹理（代码是前几行）
 
@@ -173,11 +194,17 @@ bool Duplication::InitDevice()
         if (SUCCEEDED(hr))
         {
             // Device creation success, no need to loop anymore
-            return true;
+            break;
         }
     }
 
-    return false;
+    if(m_Device == nullptr)
+    {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "InitDevice error";
+        return false;
+    }
+
+    return true;
 }
 
 bool Duplication::InitDupl(UINT Output)
@@ -191,16 +218,29 @@ bool Duplication::InitDupl(UINT Output)
     HRESULT hr = m_Device->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void**>(&DxgiDevice));
     if (FAILED(hr))
     {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "QueryInterface Failed:" << hr;
+        return false;
+    }
+
+    if(DxgiDevice == nullptr)
+    {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "DxgiDevice is  nullptr";
         return false;
     }
 
     // Get DXGI adapter
     IDXGIAdapter* DxgiAdapter = nullptr;
-    hr = DxgiDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void**>(&DxgiAdapter));
+    hr = DxgiDevice->GetAdapter(&DxgiAdapter);
     DxgiDevice->Release();
     DxgiDevice = nullptr;
     if (FAILED(hr))
     {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "GetAdapter Failed:" << hr;
+        return false;
+    }
+
+    if (DxgiAdapter == nullptr) {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "DxgiAdapter is  nullptr";
         return false;
     }
 
@@ -211,6 +251,7 @@ bool Duplication::InitDupl(UINT Output)
     DxgiAdapter = nullptr;
     if (FAILED(hr))
     {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "DxgiOutput is  nullptr";
         return false;
     }
 
@@ -226,12 +267,18 @@ bool Duplication::InitDupl(UINT Output)
         return false;
     }
 
+    if (DxgiOutput1 == nullptr) {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "DxgiOutput1 is  nullptr";
+        return false;
+    }
+
     // Create desktop duplication
     hr = DxgiOutput1->DuplicateOutput(m_Device, &m_DeskDupl);
     DxgiOutput1->Release();
     DxgiOutput1 = nullptr;
     if (FAILED(hr))
     {
+        qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "DuplicateOutput Failed";
         if (hr == DXGI_ERROR_NOT_CURRENTLY_AVAILABLE)
         {
             MessageBoxW(nullptr, L"There is already the maximum number of applications using the Desktop Duplication API running, please close one of those applications and then try again.", L"Error", MB_OK);

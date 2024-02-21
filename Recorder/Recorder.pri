@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/Frame.h \
     $$PWD/Recorder.h \
     $$PWD/FFmpegEncoder.h \
     $$PWD/AcqScreen.h \

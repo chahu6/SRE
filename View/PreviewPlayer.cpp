@@ -1,6 +1,7 @@
 #include "PreviewPlayer.h"
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QDebug>
 
 PreviewPlayer::PreviewPlayer(QWidget *parent) : QWidget(parent)
 {
@@ -61,12 +62,13 @@ QWidget *PreviewPlayer::initImageWidget()
 
 void PreviewPlayer::onSetImage(QImage image)
 {
-//    update(); //调用update将执行 paintEvent函数
-    QImage scaled_image = image.scaled(imageLabel->width(), imageLabel->height(), Qt::IgnoreAspectRatio);
+    assert(image.data_ptr() != nullptr);
+   // update(); //调用update将执行 paintEvent函数
+    QImage scaled_image = image.scaled(imageLabel->width(), imageLabel->height(), Qt::KeepAspectRatio);
 
-//    qDebug()<<"PreviewPlayer::onSetImage width="<<this->width()<<",height="<<this->height()<<
-//              ",image.width="<<image.width()<<",image.height="<<image.height()<<
-//              ",scaled_image.width="<<scaled_image.width()<<",scaled_image.height="<<scaled_image.height();
+   qDebug()<<"PreviewPlayer::onSetImage width="<<this->width()<<",height="<<this->height()<<
+             ",image.width="<<image.width()<<",image.height="<<image.height()<<
+             ",scaled_image.width="<<scaled_image.width()<<",scaled_image.height="<<scaled_image.height();
 
     QPixmap pixmap = QPixmap::fromImage(scaled_image);
     imageLabel->setPixmap(pixmap);

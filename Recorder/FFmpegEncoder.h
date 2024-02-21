@@ -41,10 +41,13 @@ public:
     int init(const char* codec_name, int width, int height, int fps, int bitrate, const char* url);
     void encode(Frame* frame);
 
+    void write_trailer();
+    void push_frame(Frame* frame);
+
 private:
     PreviewPlayer* mPreviewPlayer;
     bool bIsRecording = false;
-    bool bIsStop = true;
+    std::atomic<bool> bIsStop{true};
     std::thread* mThread;
 
     int mFps;
@@ -57,6 +60,9 @@ private:
 
     QQueue<Frame*> mVideoFrameQ;
     QMutex         mVideoFrameQ_mtx;
+
+public:
+    inline int get_fps() { return mFps; }
 
 signals:
 

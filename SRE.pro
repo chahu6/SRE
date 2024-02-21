@@ -52,22 +52,9 @@
  # 将 $$PWD/3rdparty/ffmpeg/include 目录添加到依赖文件搜索路径中。这个目录同样包含了 FFmpeg 库的头文件。
 # DEPENDPATH += $$PWD/3rdparty/ffmpeg-64bit/include
 
- # 根据 32 位和 64 位设置不同的编译选项
- contains(QMAKE_SIZEOF_VOID_P, 8) {
-     # 64 位编译环境下的配置
+ # 将 $$PWD/3rdparty/ffmpeg/include 目录添加到头文件搜索路径中。这个目录包含了 FFmpeg 库的头文件。
+ INCLUDEPATH += $$PWD/3rdparty/ffmpeg-64bit/include
 
-     # MinGW是32位的，所以ffmpeg也用32位的，不然不行，在这里搞了好久
-     # 将 $$PWD/3rdparty/ffmpeg/include 目录添加到头文件搜索路径中。这个目录包含了 FFmpeg 库的头文件。
-     INCLUDEPATH += $$PWD/3rdparty/ffmpeg-64bit/include
+ # 指定了链接阶段需要使用的一系列 FFmpeg 库，包括 avcodec、avfilter、avformat、avutil、postproc、swresample 和 swscale。同时通过 -L 选项指定了库文件的路径为 $$PWD/3rdparty/ffmpeg/lib/。
+ win32: LIBS += -L$$PWD/3rdparty/ffmpeg-64bit/lib -lavcodec -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
 
-     # 指定了链接阶段需要使用的一系列 FFmpeg 库，包括 avcodec、avfilter、avformat、avutil、postproc、swresample 和 swscale。同时通过 -L 选项指定了库文件的路径为 $$PWD/3rdparty/ffmpeg/lib/。
-     win32: LIBS += -L$$PWD/3rdparty/ffmpeg-64bit/lib -lavcodec -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
- } else {
-     # 32 位编译环境下的配置
-
-     # 将 $$PWD/3rdparty/ffmpeg/include 目录添加到头文件搜索路径中。这个目录包含了 FFmpeg 库的头文件。
-     INCLUDEPATH += $$PWD/3rdparty/ffmpeg-32bit/include
-
-     # 指定了链接阶段需要使用的一系列 FFmpeg 库，包括 avcodec、avfilter、avformat、avutil、postproc、swresample 和 swscale。同时通过 -L 选项指定了库文件的路径为 $$PWD/3rdparty/ffmpeg/lib/。
-     win32: LIBS += -L$$PWD/3rdparty/ffmpeg-32bit/lib -lavcodec -lavfilter -lavformat -lavutil -lpostproc -lswresample -lswscale
- }
