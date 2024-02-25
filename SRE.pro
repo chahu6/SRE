@@ -32,7 +32,7 @@
          style.h
 
  RESOURCES += \
-     res/res.qrc
+         res.qrc
 
  RC_ICONS = logo.ico # 配置桌面软件和的图标
 
@@ -41,10 +41,10 @@
  else: unix:!android: target.path = /opt/$${TARGET}/bin
  !isEmpty(target.path): INSTALLS += target
 
- include(./3rdparty/3rdparty.pri)
- include(./View/View.pri)
- include(./Recorder/Recorder.pri)
- include(./Utils/Utils.pri)
+ include(3rdparty/3rdparty.pri)
+ include(Index/Index.pri)
+ include(Recorder/Recorder.pri)
+ include(Utils/Utils.pri)
 
  # 这行代码将名为 d3d11 的库添加到链接阶段。这通常用于在 Windows 平台上使用 Direct3D 11 图形库进行开发。
  win32: LIBS += -ld3d11

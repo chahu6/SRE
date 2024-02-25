@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 #endif
 
     QApplication a(argc, argv);
-    a.setWindowIcon(QIcon(QStringLiteral(":/images/logo.png")));
+    a.setWindowIcon(QIcon(QStringLiteral(":/res/images/logo.png")));
 
     QSharedMemory shared("SRE");
     if(shared.attach())
