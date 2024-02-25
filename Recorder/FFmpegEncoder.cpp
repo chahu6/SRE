@@ -170,7 +170,7 @@ int FFmpegEncoder::init(const char *codec_name, int width, int height, int fps, 
     if(!oVideoCodecCtx)
     {
         qDebug()<<"avcodec_alloc_context3 error";
-        return -1;
+        return -2;
     }
 
     // CBR: 固定比特率
@@ -229,8 +229,9 @@ int FFmpegEncoder::init(const char *codec_name, int width, int height, int fps, 
     if(avcodec_open2(oVideoCodecCtx, videoCodec, nullptr))
     {
         qDebug() << __FILE__ << __FUNCTION__ << __LINE__ << "avcodec_open2 error";
-        return -1;
+        return -3;
     }
+
     swsCtx_bgra2yuv420p = sws_getCachedContext(swsCtx_bgra2yuv420p,
        oVideoCodecCtx->width, oVideoCodecCtx->height, AV_PIX_FMT_BGRA,
        oVideoCodecCtx->width, oVideoCodecCtx->height, AV_PIX_FMT_YUV420P,
