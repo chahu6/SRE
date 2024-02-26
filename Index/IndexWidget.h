@@ -2,7 +2,11 @@
 #define INDEXWIDGET_H
 
 #include <QWidget>
-#include <QPushButton>
+
+QT_BEGIN_NAMESPACE
+class QPushButton;
+class QStackedWidget;
+QT_END_NAMESPACE
 
 class IndexWidget : public QWidget
 {
@@ -14,6 +18,9 @@ private:
     void initUI();
     void initSettings();
     QWidget* initLeftWidget();
+
+     QWidget* initRightWidget();
+
 private:
     //按钮无背景
     const QString left_btn_no_background = ".QPushButton {color:rgb(255,255,255);font-size:15px;border:1px solid rgb(76,76,76); border-radius: 3px;padding: 2px;}\
@@ -23,9 +30,12 @@ private:
     const QString left_btn_no_background_selected = ".QPushButton {color:rgb(221,58,95);background-color: rgb(53,53,53);font-size:15px;border:1px solid rgb(76,76,76); border-radius: 3px;padding: 2px;}\
           .QPushButton:focus{outline: none;}";
 
-    QPushButton* vnServerBtn;
-    QPushButton* vnClientBtn;
+    QPushButton* vncServerBtn;
+    QPushButton* vncClientBtn;
     QPushButton* recordBtn;
+
+    QStackedWidget* rightStackedWidget;
+    // RecordWidget* recordWidget;
 
 };
 
