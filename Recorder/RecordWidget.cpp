@@ -4,16 +4,32 @@
 #include <QPushButton>
 #include <QDesktopServices>
 #include <QUrl>
-#include <QMediaDevices>
+#include <QAudioDeviceInfo>
+#include <QCameraInfo>
+#include <QComboBox>
+#include <QStyledItemDelegate>
+#include <QTimer>
 
 #include "ComLineWidget.h"
 #include "Utils.h"
 #include "SingletonUtils.h"
+#include "Recorder.h"
 
 RecordWidget::RecordWidget(QWidget *parent)
     :QWidget(parent)
 {
     initUI();
+
+    mRecorder = new Recorder(this);
+    connect(mRecorder, &Recorder::setImage, this, &RecordWidget::onSetImage);
+
+    mIsRecord = false;
+    durationTimer = new QTimer(this);
+    connect(durationTimer, &QTimer::timeout, this, [this]()
+    {
+        int seconds = QDateTime::currentDateTime().toSecsSinceEpoch() - mRecordStartDate.toSecsSinceEpoch();
+        durationLabel->setText(Utils::secondsToDurationStr(seconds));
+    });
 }
 
 RecordWidget::~RecordWidget()
@@ -152,9 +168,93 @@ QWidget *RecordWidget::initRecordWidget()
 
 QWidget *RecordWidget::initRecordSourceWidget()
 {
-    // mMediaDevices = new QMediaDevices(this);
+    mVideoDevices.append(new CaptureVideoDevice("请选择视频源"));
+    mVideoDevices.append(new CaptureVideoDevice(true,false,"系统屏幕(DXGI)","DXGI",25));
+    mVideoDevices.append(new CaptureVideoDevice(true,false,"系统屏幕(GDI)","GDI",20));
+    mAudioDevices.append(new CaptureAudioDevice("请选择音频源"));
+    mAudioDevices.append(new CaptureAudioDevice(true,"系统声音","SOUNDCARD"));
+    mAudioDevices.append(new CaptureAudioDevice(true,"麦克风","MICROPHONE"));
 
-    return nullptr;
+    // 获取可用的音频输入设备列表
+    QList<QAudioDeviceInfo> audioInputDevices = QAudioDeviceInfo::availableDevices(QAudio::AudioInput);
+    for(const auto& device : audioInputDevices)
+    {
+        QString name = device.deviceName();
+        QString nickname = device.deviceName();
+        if(nickname.length()> 25){
+            nickname = nickname.mid(0,25);
+        }
+        mAudioDevices.append(new CaptureAudioDevice(true,nickname,name));
+    }
+
+    // 获取可用的视频输入设备列表
+    QList<QCameraInfo> videoDevices = QCameraInfo::availableCameras();
+    for (const QCameraInfo &device : videoDevices) {
+        QString name = device.description();
+        QString nickname = device.description();
+        if(nickname.length()> 25){
+            nickname = nickname.mid(0,25);
+        }
+        mVideoDevices.append(new CaptureVideoDevice(true,true,nickname,name,25));
+    }
+
+    QWidget* widget = new QWidget(this);
+    QHBoxLayout* widgetHLayout = new QHBoxLayout(widget);
+    widgetHLayout->setContentsMargins(0,0,0,0);
+    widgetHLayout->setSpacing(0);
+
+    QString record_source_QComboBox = ".QComboBox {color:rgb(0,0,0);background-color:rgb(240,240,240);font-size:15px;border:1px solid rgb(217,217,217);}\
+                                          .QComboBox:hover {border:1px solid rgb(54,98,180);}\
+            .QComboBox::drop-down{width:0px;} \
+        .QComboBox QAbstractItemView{outline:0px;} \
+        .QComboBox QAbstractItemView::item {font-size:13px;background-color:rgb(255,255,255);height: 28px;border-bottom:1px solid rgb(217,217,217);}\
+        .QComboBox QAbstractItemView::item:selected {color:rgb(255,255,255);background-color:rgb(54,98,180);}";
+
+    // 视频源选择框
+    QComboBox* videoSourceBox = new QComboBox(widget);
+    videoSourceBox->setStyleSheet(record_source_QComboBox);
+    videoSourceBox->setFixedSize(220,36);
+    // 作用：每个子项都是这个样式。
+    QStyledItemDelegate *videoSourceDelegate = new QStyledItemDelegate(videoSourceBox);
+    videoSourceBox->setItemDelegate(videoSourceDelegate);
+    videoSourceBox->clear();
+
+    //音频源选择框
+    QComboBox * audioSourceBox = new QComboBox(widget);
+    audioSourceBox->setStyleSheet(record_source_QComboBox);
+    audioSourceBox->setFixedSize(220,36);
+    // 作用：每个子项都是这个样式。
+    QStyledItemDelegate *audioSourceDelegate = new QStyledItemDelegate(audioSourceBox);
+    audioSourceBox->setItemDelegate(audioSourceDelegate);
+    audioSourceBox->clear();
+
+    for (int i = 0; i < mVideoDevices.size(); ++i) {
+        CaptureVideoDevice* device = mVideoDevices[i];
+        videoSourceBox->addItem(device->getNickname());
+    }
+    connect(videoSourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index)
+    {
+        mSelectedVideoIndex = index;
+    });
+
+    for (int i = 0; i < mAudioDevices.size(); ++i) {
+        CaptureAudioDevice *device = mAudioDevices[i];
+        audioSourceBox->addItem(device->getNickname());
+    }
+    connect(audioSourceBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int index)
+    {
+        mSelectedAudioIndex = index;
+    });
+
+    //添加控件
+    widgetHLayout->addSpacing(20);
+    widgetHLayout->addWidget(videoSourceBox);
+    widgetHLayout->addSpacing(20);
+    widgetHLayout->addWidget(audioSourceBox);
+
+    widgetHLayout->addStretch(10);
+
+    return widget;
 }
 
 void RecordWidget::onStartBtn(bool checked)
