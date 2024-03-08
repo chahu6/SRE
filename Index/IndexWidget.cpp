@@ -14,6 +14,8 @@
 #include "constant.h"
 #include "Utils.h"
 #include "SingletonUtils.h"
+#include "RecordWidget.h"
+#include "qdebug.h"
 
 IndexWidget::IndexWidget(QWidget *parent)
     :QWidget(parent)
@@ -45,10 +47,11 @@ void IndexWidget::initSettings()
     QSettings settings;
 
     QString dirVal = settings.value(SRE_SETTINGS_DIR).toString();
-    if(dirVal.isEmpty()){
+    if(!dirVal.isEmpty())
+    {
         dirVal = QApplication::applicationDirPath() + "/Record";
         Utils::mkDirs(dirVal);
-        settings.setValue(SRE_SETTINGS_DIR,dirVal);
+        settings.setValue(SRE_SETTINGS_DIR, dirVal);
     }
     SingletonUtils::getInstance()->setRecordDir(dirVal);
 }
@@ -179,9 +182,11 @@ QWidget *IndexWidget::initRightWidget()
     rightStackedWidget = new QStackedWidget(widget);
     rightStackedWidget->setStyleSheet(QString(".QStackedWidget{background-color:%1;}").arg("rgb(43,46,56)"));
 
-    // recordWidget = new RecordWidget(this);
+    recordWidget = new RecordWidget(this);
     // vncServerWidget = new VNCServerWidget(this);
     // vncClientWidget = new VNCClientWidget(this);
+
+    rightStackedWidget->addWidget(recordWidget);
 
     widgetVLayout->addWidget(rightStackedWidget);
 

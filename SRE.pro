@@ -6,7 +6,7 @@
 
  QT       += core gui
 
- greaterThan(QT_MAJOR_VERSION, 4): QT += widgets # 如果 Qt 的主要版本号大于 4，则添加 widgets 模块到项目中
+ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia # 如果 Qt 的主要版本号大于 4，则添加 widgets 模块到项目中
  greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat # 如果 Qt 的主要版本号大于 5，则添加 core5compat 模块到项目中。这个模块提供了一些兼容性支持，帮助迁移 Qt 5 项目到 Qt 6。
 
  CONFIG += c++11 # 启用 C++11 的特性

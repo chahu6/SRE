@@ -16,6 +16,7 @@ public:
 
     void setRecordDir(const QString &recordDir);
 
+    inline QString getRecordDir() const { return m_recordDir; }
 private:
     static QAtomicPointer<SingletonUtils> m_instance;
     static QMutex m_instance_mtx;

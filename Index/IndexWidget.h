@@ -8,18 +8,20 @@ class QPushButton;
 class QStackedWidget;
 QT_END_NAMESPACE
 
+class RecordWidget;
+
 class IndexWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit IndexWidget(QWidget* parent);
+    explicit IndexWidget(QWidget* parent = nullptr);
 
 private:
     void initUI();
     void initSettings();
     QWidget* initLeftWidget();
 
-     QWidget* initRightWidget();
+    QWidget* initRightWidget();
 
 private:
     //按钮无背景
@@ -35,7 +37,7 @@ private:
     QPushButton* recordBtn;
 
     QStackedWidget* rightStackedWidget;
-    // RecordWidget* recordWidget;
+    RecordWidget* recordWidget;
 
 };
 
