@@ -12,6 +12,7 @@ Recorder::~Recorder()
 
 bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioDevice, const QString &url)
 {
+
     return false;
 }
 
