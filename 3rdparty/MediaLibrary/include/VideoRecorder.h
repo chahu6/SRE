@@ -60,7 +60,7 @@ extern "C"{
 
     int __DECLSPEC_INC VideoRecorder_Close(VideoRecorder* recorder);
 
-    int __DECLSPEC_INC Get_Frame(VideoRecorder* recorder, unsigned char*& buffer, int& size, int64_t& timestamp);
+    int __DECLSPEC_INC get_frame(VideoRecorder* recorder, unsigned char*& buffer, int& size, int64_t& timestamp);
 
 #ifdef __cplusplus
 }

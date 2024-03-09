@@ -9,11 +9,13 @@
 #include <QComboBox>
 #include <QStyledItemDelegate>
 #include <QTimer>
+#include <QDateTime>
 
 #include "ComLineWidget.h"
 #include "Utils.h"
 #include "SingletonUtils.h"
 #include "Recorder.h"
+#include "ComMessageBox.h"
 
 RecordWidget::RecordWidget(QWidget *parent)
     :QWidget(parent)
@@ -259,15 +261,65 @@ QWidget *RecordWidget::initRecordSourceWidget()
 
 void RecordWidget::onStartBtn(bool checked)
 {
+    if(!mIsRecord)
+    {
+        CaptureVideoDevice* videoDevice = mVideoDevices[mSelectedVideoIndex];
+        CaptureAudioDevice* audioDevice = mAudioDevices[mSelectedAudioIndex];
 
+        if(!videoDevice->isUse() && !audioDevice->isUse())
+        {
+            ComMessageBox::error(this, "请至少选择一种输入源！");
+            return;
+        }
+
+        QString url = QString("%1/%2.mp4").arg(SingletonUtils::getInstance()->getRecordDir())
+                          .arg(QDateTime::currentDateTime().toLocalTime().toString("yyyy-MM-dd-hh-mm-ss"));
+
+        if(mRecorder->start(videoDevice, audioDevice, url))
+        {
+            startBtn->hide();
+            pauseBtn->show();
+            stopBtn->show();
+
+            mIsRecord = true;
+            mRecordStartDate = QDateTime::currentDateTime();
+            durationTimer->start(1000);
+        }
+        else
+        {
+            ComMessageBox::error(this, "输入源存在错误！");
+        }
+    }
 }
 
 void RecordWidget::onStopBtn(bool checked)
 {
+    if(mIsRecord){
+        startBtn->show();
+        pauseBtn->hide();
+        stopBtn->hide();
+        mIsRecord = false;
+        durationTimer->stop();
+        mRecorder->stop();
+        durationLabel->setText(Utils::secondsToDurationStr(0));
+    }else{
 
+
+    }
 }
 
 void RecordWidget::onSetImage(QImage image)
 {
+    //    update(); //调用update将执行 paintEvent函数
+    int scaled_h = imageLabel->height();
+    int scaled_w = int(float(scaled_h) * float(image.width())/float(image.height()));
 
+    QImage scaled_image = image.scaled(scaled_w, scaled_h, Qt::IgnoreAspectRatio);
+
+    //    qDebug()<<"RecordWidget::onSetImage width="<<this->width()<<",height="<<this->height()<<
+    //              ",image.width="<<image.width()<<",image.height="<<image.height()<<
+    //              ",scaled_image.width="<<scaled_image.width()<<",scaled_image.height="<<scaled_image.height();
+
+    QPixmap pixmap = QPixmap::fromImage(scaled_image);
+    imageLabel->setPixmap(pixmap);
 }

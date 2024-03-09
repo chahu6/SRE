@@ -3,6 +3,15 @@
 
 #include <QObject>
 #include <QImage>
+#include <VideoRecorder.h>
+
+namespace UMediaLibrary {
+    struct VideoRecorder;
+    struct AudioRecorder;
+    struct AvEncoder;
+}
+
+class CaptureVideoThread;
 
 struct CaptureVideoDevice
 {
@@ -29,6 +38,10 @@ public:
     int getFps(){
         return mFps;
     }
+
+public:
+    int width;
+    int height;
 
 private:
     bool mUse = false;
@@ -77,7 +90,23 @@ public:
     bool pause();
     bool stop();
 
+    UMediaLibrary::VideoRecorder* getVideoRecorder();
+    UMediaLibrary::AudioRecorder* getAudioRecorder();
+    UMediaLibrary::AvEncoder* getAvEncoder();
+    UMediaLibrary::EPixelFormat getPixelFormat();
+
 private:
+    CaptureVideoDevice* mVideoDevice = nullptr;
+    CaptureAudioDevice* mAudioDevice = nullptr;
+
+    UMediaLibrary::VideoRecorder* mVideoRecorder = nullptr;
+    UMediaLibrary::AudioRecorder* mAudioRecorder = nullptr;
+    UMediaLibrary::AvEncoder*  mAvEncoder = nullptr;
+
+    CaptureVideoThread* mCaptureVideoThread = nullptr;
+
+    bool mIsStop = true;
+    UMediaLibrary::EPixelFormat mPixelFormat = UMediaLibrary::PIXEL_None;
 
 signals:
     void setImage(QImage image);
