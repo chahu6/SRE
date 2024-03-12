@@ -9,6 +9,8 @@ class QStackedWidget;
 QT_END_NAMESPACE
 
 class RecordWidget;
+class VNCServerWidget;
+class VNCClientWidget;
 
 class IndexWidget : public QWidget
 {
@@ -38,6 +40,9 @@ private:
 
     QStackedWidget* rightStackedWidget;
     RecordWidget* recordWidget;
+
+    VNCServerWidget* vncServerWidget;
+    VNCClientWidget* vncClientWidget;
 
 };
 

@@ -8,8 +8,10 @@
 #include <QSharedMemory>
 #include <QDebug>
 #include <QsLog.h>
+#include <QDesktopWidget>
+
 #include "Utils.h"
-#include "Utils/ComMessageBox.h"
+#include "ComMessageBox.h"
 
 using namespace QsLogging;
 
@@ -45,10 +47,10 @@ LONG ApplicationCrashHandler(EXCEPTION_POINTERS* pException)
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("any12345");
-    QCoreApplication::setOrganizationDomain("www.any12345.com");
+    QCoreApplication::setOrganizationName("Chahu666");
+    QCoreApplication::setOrganizationDomain("https://gitee.com/chahu666");
     QCoreApplication::setApplicationName("SRE");
-    QCoreApplication::setApplicationVersion("1.0");
+    QCoreApplication::setApplicationVersion("2.0");
 
     //注冊异常捕获函数
     SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)ApplicationCrashHandler);
@@ -83,6 +85,13 @@ int main(int argc, char *argv[])
     QLOG_INFO() << vInfo;
 
     MainWindow mainWindow;
+
+    // @TODO: 将窗口移动到屏幕中心,有点问题
+    // int pixelRatio = QApplication::desktop()->screen()->devicePixelRatio(); // 获取缩放因素
+    // int currentScreen = a.desktop()->screenNumber(&mainWindow);//程序所在的屏幕编号
+    // QRect rect = a.desktop()->screenGeometry(currentScreen);//程序所在屏幕尺寸
+    // mainWindow.move((rect.width() - mainWindow.width()) / 2, (rect.height() - mainWindow.height()) / 2);//移动到所在屏幕中间
+
     mainWindow.show();
 
     return a.exec();

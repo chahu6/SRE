@@ -25,6 +25,12 @@ void SingletonUtils::setRecordDir(const QString &recordDir)
     m_recordDir = recordDir;
 }
 
+void SingletonUtils::setScreenSize(int width, int height)
+{
+    mScreenWidth = width;
+    mScreenHeight = height;
+}
+
 int SingletonUtils::getScreenWidth()
 {
     return mScreenWidth;

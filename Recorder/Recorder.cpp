@@ -10,8 +10,7 @@ using namespace UMediaLibrary;
 
 Recorder::Recorder(QObject *parent)
     :QObject(parent)
-{
-}
+{}
 
 Recorder::~Recorder()
 {
@@ -25,8 +24,8 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
 
     // 采集视频相关参数
     int videoBitrate = 2000000;
-    mVideoDevice->width = 1920/*SingletonUtils::getInstance()->getScreenWidth()*/;
-    mVideoDevice->height = 1080/*SingletonUtils::getInstance()->getScreenHeight()*/;
+    mVideoDevice->width = SingletonUtils::getInstance()->getScreenWidth();
+    mVideoDevice->height = SingletonUtils::getInstance()->getScreenHeight();
 
     int fps = mVideoDevice->getFps();
     bool hasVideo = mVideoDevice->isUse();

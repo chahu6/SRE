@@ -18,9 +18,10 @@ public:
 
     inline QString getRecordDir() const { return m_recordDir; }
 
+    void setScreenSize(int width,int height);
+
     int getScreenWidth(); // 主屏幕分辨率宽
     int getScreenHeight(); // 主屏幕分辨率高
-
 
 private:
     static QAtomicPointer<SingletonUtils> m_instance;

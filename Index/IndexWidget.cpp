@@ -15,7 +15,8 @@
 #include "Utils.h"
 #include "SingletonUtils.h"
 #include "RecordWidget.h"
-#include "qdebug.h"
+#include "VNCServerWidget.h"
+#include "VNCClientWidget.h"
 
 IndexWidget::IndexWidget(QWidget *parent)
     :QWidget(parent)
@@ -45,14 +46,11 @@ void IndexWidget::initUI()
 void IndexWidget::initSettings()
 {
     QSettings settings;
+    settings.clear();
 
-    QString dirVal = settings.value(SRE_SETTINGS_DIR).toString();
-    if(!dirVal.isEmpty())
-    {
-        dirVal = QApplication::applicationDirPath() + "/Record";
-        Utils::mkDirs(dirVal);
-        settings.setValue(SRE_SETTINGS_DIR, dirVal);
-    }
+    QString dirVal = QApplication::applicationDirPath() + "/Record";
+    Utils::mkDirs(dirVal);
+    settings.setValue(SRE_SETTINGS_DIR, dirVal);
     SingletonUtils::getInstance()->setRecordDir(dirVal);
 }
 
@@ -68,6 +66,7 @@ QWidget *IndexWidget::initLeftWidget()
 
     vncServerBtn = new QPushButton(widget);
     vncServerBtn->setCursor(Qt::PointingHandCursor);
+    vncServerBtn->setStyleSheet(left_btn_no_background);
     vncServerBtn->setFixedSize(size);
     vncServerBtn->setText("远程协助");
 
@@ -83,25 +82,29 @@ QWidget *IndexWidget::initLeftWidget()
     recordBtn->setFixedSize(size);
     recordBtn->setText("录制屏幕");
 
-    connect(vncServerBtn,&QPushButton::clicked,this,[this](){
+    connect(vncServerBtn,&QPushButton::clicked,this,[this]()
+    {
         vncServerBtn->setStyleSheet(left_btn_no_background_selected);
         vncClientBtn->setStyleSheet(left_btn_no_background);
         recordBtn->setStyleSheet(left_btn_no_background);
 
-        // this->rightStackedWidget->setCurrentWidget(vncServerWidget);
+        this->rightStackedWidget->setCurrentWidget(vncServerWidget);
 
     });
-    connect(vncClientBtn,&QPushButton::clicked,this,[this](){
+    connect(vncClientBtn,&QPushButton::clicked,this,[this]()
+    {
         vncServerBtn->setStyleSheet(left_btn_no_background);
         vncClientBtn->setStyleSheet(left_btn_no_background_selected);
         recordBtn->setStyleSheet(left_btn_no_background);
-        // this->rightStackedWidget->setCurrentWidget(vncClientWidget);
+        this->rightStackedWidget->setCurrentWidget(vncClientWidget);
     });
-    connect(recordBtn,&QPushButton::clicked,this,[this](){
+
+    connect(recordBtn,&QPushButton::clicked,this,[this]()
+    {
         vncServerBtn->setStyleSheet(left_btn_no_background);
         vncClientBtn->setStyleSheet(left_btn_no_background);
         recordBtn->setStyleSheet(left_btn_no_background_selected);
-        // this->rightStackedWidget->setCurrentWidget(recordWidget);
+        this->rightStackedWidget->setCurrentWidget(recordWidget);
     });
 
     // 菜单start
@@ -109,7 +112,8 @@ QWidget *IndexWidget::initLeftWidget()
 
     QAction *settingsAct = settingsMenu->addAction("设置");
     settingsAct->setShortcuts(QKeySequence::WhatsThis);
-    connect(settingsAct, &QAction::triggered, this, [this]() {
+    connect(settingsAct, &QAction::triggered, this, [this]()
+    {
         Settings dlg(this);
         dlg.exec();
     });
@@ -129,12 +133,12 @@ QWidget *IndexWidget::initLeftWidget()
     logoutAct->setShortcuts(QKeySequence::Quit);
     connect(logoutAct, &QAction::triggered, this, [this]() {
         switch (QMessageBox::information(this,"提示","确认要退出吗？","确定","取消",0)){
-        case 0:{
-
-            QApplication* app;
-            app->quit();
-            break;
-        }
+            case 0:
+            {
+                QApplication* app;
+                app->quit();
+                break;
+            }
         }
     });
 
@@ -155,7 +159,8 @@ QWidget *IndexWidget::initLeftWidget()
                                           .QPushButton:focus{outline: none;}");
     settingsBtn->setCursor(Qt::PointingHandCursor);
     settingsBtn->setFixedSize(100,40);
-    connect(settingsBtn,&QPushButton::clicked,this,[this,settingsMenu](){
+    connect(settingsBtn,&QPushButton::clicked,this,[this,settingsMenu]()
+    {
        settingsMenu->exec(QCursor::pos());
     });
 
@@ -183,10 +188,14 @@ QWidget *IndexWidget::initRightWidget()
     rightStackedWidget->setStyleSheet(QString(".QStackedWidget{background-color:%1;}").arg("rgb(43,46,56)"));
 
     recordWidget = new RecordWidget(this);
-    // vncServerWidget = new VNCServerWidget(this);
-    // vncClientWidget = new VNCClientWidget(this);
+    vncServerWidget = new VNCServerWidget(this);
+    vncClientWidget = new VNCClientWidget(this);
 
     rightStackedWidget->addWidget(recordWidget);
+    rightStackedWidget->addWidget(vncServerWidget);
+    rightStackedWidget->addWidget(vncClientWidget);
+
+    rightStackedWidget->setCurrentWidget(recordWidget);
 
     widgetVLayout->addWidget(rightStackedWidget);
 

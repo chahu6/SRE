@@ -4,7 +4,9 @@
 #include <QScreen>
 #include <QDebug>
 #include <QsLog.h>
+
 #include "IndexWidget.h"
+#include "SingletonUtils.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -16,18 +18,21 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle(title);
 
     QList<QScreen*> screens = QGuiApplication::screens(); // 获取到多个屏幕
-//    QScreen* screen = QGuiApplication::primaryScreen(); // 获取主屏幕
+   // QScreen* screen = QGuiApplication::primaryScreen(); // 获取主屏幕
     QScreen* screen = screens.at(0);
-    QRect screenRect = screen->geometry();
-    int screenWidth = screenRect.width();
-    int screenHeight = screenRect.height();
-    // SingletonUtils::getInstance()->setScreenSize(screenWidth, screenHeight);
+    int pixelRatio = screen->devicePixelRatio(); // 获取缩放因素
 
-    int w = int(float(screenWidth) * 0.5);
-    int h = int(float(screenHeight) * 0.5);
+    QRect screenRect = screen->geometry();
+    int screenWidth = screenRect.width() * pixelRatio;
+    int screenHeight = screenRect.height() * pixelRatio;
+    SingletonUtils::getInstance()->setScreenSize(screenWidth, screenHeight);
+
+    int w = int(float(screenWidth) * 0.5 / pixelRatio);
+    int h = int(float(screenHeight) * 0.5 / pixelRatio);
 
     QLOG_INFO() << "screens="<<screens.size()<<",screenWidth="<<screenWidth<<",screenHeight="<<screenHeight<<",w="<<w<<",h="<<h;
     qDebug() << "screens="<<screens.size()<<",screenWidth="<<screenWidth<<",screenHeight="<<screenHeight<<",w="<<w<<",h="<<h;
+
     this->resize(w,h);
 
     IndexWidget* index = new IndexWidget(this);
@@ -36,4 +41,5 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
+    (void)event;
 }

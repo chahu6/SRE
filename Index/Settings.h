@@ -5,6 +5,7 @@
 
 QT_BEGIN_NAMESPACE
 class QVBoxLayout;
+class QStackedWidget;
 QT_END_NAMESPACE
 
 class Settings : public QDialog
@@ -14,10 +15,14 @@ public:
     explicit Settings(QWidget* parent);
 
 private:
-    void initBottomUI();
+    void initUI();
+    QWidget* initLeftWidget();
+    QWidget* initRightWidget();
+
+    void initCommonWidget();
 
 private:
-    QVBoxLayout* mainVLayout;
+    QStackedWidget* rightStackedWidget;
 };
 
 #endif // SETTINGS_H

@@ -104,7 +104,7 @@ void About::initBottomUi()
 
     QLabel *authorLabel = new QLabel(bottomWidget);
     authorLabel->setStyleSheet(m_stylesheet_QLabel14);
-    authorLabel->setText(tr("作者 <a style='text-decoration:none;color:rgb(43,113,237);' href='https://space.bilibili.com/487906612'>北小菜</a>"));
+    authorLabel->setText(tr("作者 <a style='text-decoration:none;color:rgb(43,113,237);' href='https://gitee.com/chahu666'>Chahu666</a>"));
     authorLabel->setOpenExternalLinks(true);
     connect(authorLabel,&QLabel::linkActivated,this,[](const QString &link)
     {

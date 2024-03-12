@@ -46,6 +46,8 @@ include(3rdparty/3rdparty.pri)
 include(Index/Index.pri)
 include(Recorder/Recorder.pri)
 include(Utils/Utils.pri)
+include(VNCServer/VNCServer.pri)
+include(VNCClient/VNCClient.pri)
 
 # windows
 # win32: LIBS += -lws2_32
