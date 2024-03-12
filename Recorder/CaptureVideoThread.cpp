@@ -17,7 +17,20 @@ CaptureVideoThread::CaptureVideoThread(QObject *parent, CaptureVideoDevice *vide
 
 CaptureVideoThread::~CaptureVideoThread()
 {
+    mIsStop = true;
+    // while(true)
+    // {
+    //     if(isFinished())
+    //     {
+    //         break;
+    //     }
+    //     else
+    //     {
+    //         msleep(5);
+    //     }
+    // }
 
+    wait();
 }
 
 void CaptureVideoThread::run()
@@ -50,10 +63,9 @@ void CaptureVideoThread::run()
     while(true)
     {
         fpsControl.intervalStart();
-        if(mIsStop)
-        {
-            break;
-        }
+
+        if(mIsStop) break;
+
         ret = get_frame(mRecorder->getVideoRecorder(), frameBuff, frameBuffSize, frameTimestamp);
 
         if(ret >= 0)
@@ -108,5 +120,6 @@ void CaptureVideoThread::run()
         delete[] frameBuff_rgba;
         frameBuff_rgba = nullptr;
     }
+
     this->exit();
 }

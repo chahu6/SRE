@@ -6,9 +6,9 @@
 #ifdef _WIN32
     #if defined(DYNAMIC_LINK) 
         #ifdef MEDIALIBRARY_EXPORTS
-			#define __DECLSPEC_INC __declspec(dllexport)
+            #define __DECLSPEC_INC __declspec(dllexport)
 		#else
-			#define __DECLSPEC_INC __declspec(dllimport)
+            #define __DECLSPEC_INC __declspec(dllimport)
 		#endif // XW_BUILD_DLL
     #else
         #define __DECLSPEC_INC

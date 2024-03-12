@@ -36,7 +36,29 @@ RecordWidget::RecordWidget(QWidget *parent)
 
 RecordWidget::~RecordWidget()
 {
+    disconnect(mRecorder, &Recorder::setImage, this, &RecordWidget::onSetImage);
+    if(mRecorder)
+    {
+        delete mRecorder;
+        mRecorder = nullptr;
+    }
 
+    for(int i = 0; i < mVideoDevices.size(); ++i)
+    {
+        CaptureVideoDevice* device = mVideoDevices[i];
+        delete device;
+        device = nullptr;
+    }
+
+    for (int i = 0; i < mAudioDevices.size(); ++i)
+    {
+        CaptureAudioDevice *device = mAudioDevices[i];
+        delete device;
+        device = nullptr;
+    }
+
+    mVideoDevices.clear();
+    mAudioDevices.clear();
 }
 
 void RecordWidget::initUI()

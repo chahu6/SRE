@@ -30,7 +30,7 @@ extern "C"{
 
     int __DECLSPEC_INC send_frame(AvEncoder* encoder, FFrame* frame);
 
-    int __DECLSPEC_INC recive_packet(AvEncoder* encoder, FPacket* packet);
+    int __DECLSPEC_INC receive_packet(AvEncoder* encoder, FPacket* packet);
 
 #ifdef __cplusplus
 }

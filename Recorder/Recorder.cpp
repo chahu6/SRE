@@ -1,6 +1,7 @@
 #include "Recorder.h"
 #include <AvEncoder.h>
 #include <AvFrame.h>
+#include <QTimer>
 
 #include "SingletonUtils.h"
 #include "CaptureVideoThread.h"
@@ -24,8 +25,8 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
 
     // 采集视频相关参数
     int videoBitrate = 2000000;
-    mVideoDevice->width = SingletonUtils::getInstance()->getScreenWidth();
-    mVideoDevice->height = SingletonUtils::getInstance()->getScreenHeight();
+    mVideoDevice->width = 1920/*SingletonUtils::getInstance()->getScreenWidth()*/;
+    mVideoDevice->height = 1080/*SingletonUtils::getInstance()->getScreenHeight()*/;
 
     int fps = mVideoDevice->getFps();
     bool hasVideo = mVideoDevice->isUse();
@@ -90,7 +91,43 @@ bool Recorder::pause()
 
 bool Recorder::stop()
 {
-    return false;
+    mIsStop = true;
+
+    if(mCaptureVideoThread)
+    {
+        delete mCaptureVideoThread;
+        mCaptureVideoThread = nullptr;
+    }
+
+    if(mVideoRecorder)
+    {
+        VideoRecorder_Close(mVideoRecorder);
+        delete mVideoRecorder;
+        mVideoRecorder = nullptr;
+    }
+
+    if(mAudioRecorder)
+    {
+
+    }
+
+    if(mAvEncoder)
+    {
+        AvEncoder_Close(mAvEncoder);
+        delete mAvEncoder;
+        mAvEncoder = nullptr;
+    }
+
+    if(mVideoDevice && mVideoDevice->isUse())
+    {
+        QTimer::singleShot(100, this, [this]()
+        {
+            QImage image(mVideoDevice->width, mVideoDevice->height, QImage::Format_RGB32);
+            image.fill(QColor(25, 27, 38));
+            emit this->setImage(image.copy());
+        });
+    }
+    return true;
 }
 
 VideoRecorder *Recorder::getVideoRecorder()
