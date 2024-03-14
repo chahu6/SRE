@@ -53,6 +53,6 @@ include(VNCClient/VNCClient.pri)
 # win32: LIBS += -lws2_32
 
 # MediaLibrary
-win32: LIBS += -L$$PWD/3rdparty/MediaLibrary/lib -lAvEncoder -lVideoRecorder
+win32: LIBS += -L$$PWD/3rdparty/MediaLibrary/lib -lAvEncoder -lVideoRecorder -lAudioRecorder
 INCLUDEPATH += $$PWD/3rdparty/MediaLibrary/include
 DEPENDPATH += $$PWD/3rdparty/MediaLibrary/include

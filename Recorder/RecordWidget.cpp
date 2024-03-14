@@ -123,7 +123,7 @@ void RecordWidget::initUI()
                                                                          videoBtn->setFixedSize(100,30);
     videoBtn->setCursor(Qt::PointingHandCursor);
     videoBtn->setText(tr("录制列表"));
-    connect(videoBtn, &QPushButton::clicked, this, [this]()
+    connect(videoBtn, &QPushButton::clicked, this, []()
     {
         QDesktopServices::openUrl(QUrl::fromLocalFile(SingletonUtils::getInstance()->getRecordDir()));
     });

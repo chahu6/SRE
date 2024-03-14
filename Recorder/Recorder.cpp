@@ -2,9 +2,11 @@
 #include <AvEncoder.h>
 #include <AvFrame.h>
 #include <QTimer>
+#include <AudioRecorder.h>
 
 #include "SingletonUtils.h"
 #include "CaptureVideoThread.h"
+#include "CaptureAudioThread.h"
 
 using namespace UMediaLibrary;
 
@@ -32,8 +34,7 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
     const char* videoCodecName = "libx264";
 
     // 采集音频相关参数
-    // bool hasAudio = mAudioDevice->isUse();
-    bool hasAudio = false;
+    bool hasAudio = mAudioDevice->isUse();
     const char* audioCodecName = "aac";
     int audioBitrate = 128000;
 
@@ -53,6 +54,18 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
         mVideoDevice->width = mVideoRecorder->factWidth;
         mVideoDevice->height = mVideoRecorder->factHeight;
         mPixelFormat = mVideoRecorder->pixelFormat;
+    }
+
+    if(hasAudio)
+    {
+        const char* audioCapture = mAudioDevice->getName().toStdString().data();
+        mAudioRecorder = new AudioRecorder(audioCapture);
+
+        ret = AudioRecorder_Open(mAudioRecorder);
+        if(ret < 0)
+        {
+            return -1;
+        }
     }
 
     mAvEncoder = new AvEncoder(hasVideo, videoCodecName, videoBitrate, mPixelFormat,
@@ -77,7 +90,8 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
     // 开启采集音频线程
     if(hasAudio)
     {
-
+        mCaptureAudioThread = new CaptureAudioThread(this, mAudioDevice);
+        mCaptureAudioThread->start(QThread::NormalPriority);
     }
 
     return true;
@@ -98,6 +112,12 @@ bool Recorder::stop()
         mCaptureVideoThread = nullptr;
     }
 
+    if(mCaptureAudioThread)
+    {
+        delete mCaptureAudioThread;
+        mCaptureAudioThread = nullptr;
+    }
+
     if(mVideoRecorder)
     {
         VideoRecorder_Close(mVideoRecorder);
@@ -107,7 +127,9 @@ bool Recorder::stop()
 
     if(mAudioRecorder)
     {
-
+        AudioRecorder_Close(mAudioRecorder);
+        delete mAudioRecorder;
+        mAudioRecorder = nullptr;
     }
 
     if(mAvEncoder)

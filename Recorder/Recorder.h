@@ -12,6 +12,7 @@ namespace UMediaLibrary {
 }
 
 class CaptureVideoThread;
+class CaptureAudioThread;
 
 struct CaptureVideoDevice
 {
@@ -104,6 +105,7 @@ private:
     UMediaLibrary::AvEncoder*  mAvEncoder = nullptr;
 
     CaptureVideoThread* mCaptureVideoThread = nullptr;
+    CaptureAudioThread* mCaptureAudioThread = nullptr;
 
     bool mIsStop = true;
     UMediaLibrary::EPixelFormat mPixelFormat = UMediaLibrary::PIXEL_None;
