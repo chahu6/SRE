@@ -48,7 +48,7 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
         ret = VideoRecorder_Open(mVideoRecorder);
         if(ret < 0)
         {
-            return -1;
+            return false;
         }
 
         mVideoDevice->width = mVideoRecorder->factWidth;
@@ -64,7 +64,7 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
         ret = AudioRecorder_Open(mAudioRecorder);
         if(ret < 0)
         {
-            return -1;
+            return false;
         }
     }
 
@@ -75,7 +75,7 @@ bool Recorder::start(CaptureVideoDevice *videoDevice, CaptureAudioDevice *audioD
     ret = AvEncoder_Open(mAvEncoder, url.toLatin1().constData());
     if(ret < 0)
     {
-        return -1;
+        return false;
     }
 
     mIsStop = false;
