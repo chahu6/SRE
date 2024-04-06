@@ -1,12 +1,19 @@
 #include "VNCServerWidget.h"
 #include <QVBoxLayout>
 #include <QLabel>
+#include <Qdebug>
+#include <QPushButton>
+
+#include "ControlServer.h"
 
 VNCServerWidget::VNCServerWidget(QWidget *parent)
     : QWidget{parent}
 {
     setAttribute(Qt::WA_StyledBackground, true);
     setStyleSheet(QString(".VNCServerWidget{background-color:%1;}").arg("rgb(25,27,38)"));
+
+    mServer = new ControlServer(this);
+
     initUI();
 }
 
@@ -91,9 +98,32 @@ void VNCServerWidget::initUI()
     infoHLayout->addStretch(10);
     //info end
 
+    // 启动监听
+    QWidget* listenWidget = new QWidget(this);
+    QHBoxLayout* listenHLayout = new QHBoxLayout(listenWidget);
+    listenHLayout->setContentsMargins(0,0,0,0);
+    listenHLayout->setSpacing(0);
+
+    QPushButton* listenBtn = new QPushButton(listenWidget);
+    listenBtn->setText("启动监听");
+    connect(listenBtn, &QPushButton::clicked, this, &VNCServerWidget::listenServer);
+
+    listenHLayout->addStretch();
+    listenHLayout->addWidget(listenBtn);
+    listenHLayout->addStretch();
+
+
     mainVLayout->addSpacing(80);
     mainVLayout->addWidget(nameWidget);
     mainVLayout->addSpacing(10);
     mainVLayout->addWidget(infoWidget);
+    mainVLayout->addSpacing(10);
+    mainVLayout->addWidget(listenWidget);
     mainVLayout->addStretch(10);
+}
+
+void VNCServerWidget::listenServer()
+{
+    qDebug() << "监听端口";
+    mServer->listenServer(8899);
 }

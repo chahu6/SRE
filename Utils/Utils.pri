@@ -1,4 +1,5 @@
 HEADERS += \
+    $$PWD/Client.h \
     $$PWD/ComMessageBox.h \
     $$PWD/FpsControl.h \
     $$PWD/SingletonUtils.h \
@@ -7,6 +8,7 @@ HEADERS += \
     $$PWD/constant.h
 
 SOURCES += \
+    $$PWD/Client.cpp \
     $$PWD/ComMessageBox.cpp \
     $$PWD/ComLineWidget.cpp \
     $$PWD/FpsControl.cpp \

@@ -2,10 +2,12 @@
 #define VNCCLIENTWIDGET_H
 
 #include <QWidget>
+QT_BEGIN_INCLUDE_NAMESPACE
+class QLineEdit;
+class QPushButton;
+QT_END_INCLUDE_NAMESPACE
 
-QT_BEGIN_NAMESPACE
-class QListWidget;
-QT_END_NAMESPACE
+class Client;
 class ClientDialog;
 
 class VNCClientWidget : public QWidget
@@ -16,13 +18,18 @@ public:
 
 private:
     void initUI();
-    QWidget* initLeftWidget();
-    QWidget* initRightWidget();
 
 private:
-    QListWidget *deviceListWidget;
+    QLineEdit* mIpLineEdit;
+    QLineEdit* mPortLineEdit;
+    Client* mClient;
+
     ClientDialog *clientDialog;
+
 signals:
+
+public slots:
+    void connectServer(bool checked);
 };
 
 #endif // VNCCLIENTWIDGET_H

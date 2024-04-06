@@ -3,19 +3,25 @@
 
 #include <QDialog>
 
+QT_BEGIN_INCLUDE_NAMESPACE
+class QLabel;
+QT_END_INCLUDE_NAMESPACE
+
+class Client;
+
 class ClientDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ClientDialog(QWidget* parent);
-    ~ClientDialog();
+    explicit ClientDialog(Client* client, QWidget *parent);
 
 private:
-    void initUI();
+    void initUi();
 
-protected:
-    void closeEvent(QCloseEvent* event) override;
+private:
+    Client* mClient;
 
+    QLabel* imageLabel; // 渲染录屏画面
 };
 
 #endif // CLIENTDIALOG_H

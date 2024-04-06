@@ -1,11 +1,12 @@
 #include "ClientDialog.h"
 #include <QDebug>
+#include <QLabel>
 #include <QVBoxLayout>
 
-#include "CilentTabWidget.h"
+#include "Client.h"
 
-ClientDialog::ClientDialog(QWidget *parent)
-    :QDialog(parent)
+ClientDialog::ClientDialog(Client* client, QWidget *parent)
+    :QDialog(parent), mClient(client)
 {
     qDebug()<<"ClientDialog::ClientDialog()";
     Qt::WindowFlags flags=Qt::Dialog;
@@ -17,27 +18,16 @@ ClientDialog::ClientDialog(QWidget *parent)
     setStyleSheet(QString(".ClientDialog{background-color:%1;}").arg("rgb(43,46,56)"));
     setWindowTitle(tr("远程控制"));
 
-    initUI();
+    initUi();
 }
 
-ClientDialog::~ClientDialog()
+void ClientDialog::initUi()
 {
-    qDebug()<<"ClientDialog::~ClientDialog()";
-}
-
-void ClientDialog::initUI()
-{
-    QVBoxLayout *mainVLayout = new QVBoxLayout(this);
+    QVBoxLayout* mainVLayout = new QVBoxLayout(this);
     mainVLayout->setContentsMargins(0,0,0,0);
     mainVLayout->setSpacing(0);
 
-    CilentTabWidget *tabWidget = new CilentTabWidget(this);
-    mainVLayout->addWidget(tabWidget);
-
-    tabWidget->addDesktopTab();
-}
-
-void ClientDialog::closeEvent(QCloseEvent* event)
-{
-    Q_UNUSED(event);
+    imageLabel = new QLabel(this);
+    imageLabel->setStyleSheet(".QLabel{background-color:rgb(255,0,0)}");
+    mainVLayout->addWidget(imageLabel);
 }

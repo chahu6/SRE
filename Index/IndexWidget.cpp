@@ -195,7 +195,7 @@ QWidget *IndexWidget::initRightWidget()
     rightStackedWidget->addWidget(vncServerWidget);
     rightStackedWidget->addWidget(vncClientWidget);
 
-    rightStackedWidget->setCurrentWidget(recordWidget);
+    rightStackedWidget->setCurrentWidget(vncClientWidget);
 
     widgetVLayout->addWidget(rightStackedWidget);
 
