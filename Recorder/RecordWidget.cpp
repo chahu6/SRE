@@ -326,7 +326,6 @@ void RecordWidget::onStopBtn(bool checked)
         durationLabel->setText(Utils::secondsToDurationStr(0));
     }else{
 
-
     }
 }
 

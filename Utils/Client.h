@@ -1,7 +1,16 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
+#include <QImage>
 #include <QObject>
+#include <VideoRecorder.h>
+
+namespace UMediaLibrary
+{
+    struct VideoRecorder;
+    struct AudioRecorder;
+    struct AvEncoder;
+}
 
 class QTcpSocket;
 
@@ -17,9 +26,15 @@ public:
 
     void sendMsg();
 
+    void sendImage(const QByteArray& data);
+
     void recvMsg();
 
+    void recvData(QByteArray& data);
+
     void startRecvVideo();
+
+    void startSendVideo();
 
 private:
     bool initVideo();
@@ -29,8 +44,24 @@ private:
 
     QString mServerIp;
 
-signals:
+    UMediaLibrary::VideoRecorder* mVideoRecorder = nullptr;
 
+    UMediaLibrary::EPixelFormat mPixelFormat = UMediaLibrary::PIXEL_None;
+
+    int factWidth;
+    int factHeight;
+
+
+    class RecvTextureThread* mTestThread;
+
+public:
+    inline int getFactWidth() const { return factWidth; }
+    inline int getFactHeight() const { return factHeight; }
+    inline UMediaLibrary::VideoRecorder* getVideoRecorder() const { return mVideoRecorder; }
+    inline UMediaLibrary::EPixelFormat getPixelFormat() const { return mPixelFormat; }
+
+signals:
+    void setImage(QImage image);
 };
 
 #endif // CLIENT_H

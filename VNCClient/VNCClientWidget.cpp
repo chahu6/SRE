@@ -64,7 +64,7 @@ void VNCClientWidget::connectServer(bool checked)
     QString ip = mIpLineEdit->text();
     unsigned short port = mPortLineEdit->text().toUShort();
 
-    // mClient->connectServer(ip);
+    mClient->connectServer(ip);
 
     clientDialog->show();
 }

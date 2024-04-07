@@ -4,6 +4,9 @@
 #include <QObject>
 
 class QTcpServer;
+class QTcpSocket;
+
+class TestServerThread;
 
 class ControlServer : public QObject
 {
@@ -13,8 +16,13 @@ public:
 
     bool listenServer(unsigned short port);
 
+    void recvMsg();
+
 private:
     QTcpServer* mServer;
+    QTcpSocket* m_tcp;
+
+    TestServerThread* mTestThread;
 
 signals:
 };

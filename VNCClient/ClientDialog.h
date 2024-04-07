@@ -22,6 +22,9 @@ private:
     Client* mClient;
 
     QLabel* imageLabel; // 渲染录屏画面
+
+public slots:
+    void onSetImage(QImage image);
 };
 
 #endif // CLIENTDIALOG_H

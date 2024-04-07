@@ -65,18 +65,17 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     a.setWindowIcon(QIcon(QStringLiteral(":/res/images/logo.png")));
 
-    QSharedMemory shared("SRE");
-    if(shared.attach())
-    {
-        ComMessageBox::error(NULL, "软件已经在运行中");
-        qDebug() << "已经打开";
-        return 0;
-    }
-    shared.create(1);
-
-    QString logDir = QApplication::applicationDirPath() + "/logs";
+    // QSharedMemory shared("SRE");
+    // if(shared.attach())
+    // {
+    //     ComMessageBox::error(NULL, "软件已经在运行中");
+    //     qDebug() << "已经打开";
+    //     return 0;
+    // }
+    // shared.create(1);
 
     // 初始化日志库
+    QString logDir = QApplication::applicationDirPath() + "/logs";
     initLogger(logDir);
 
     QString vInfo = QString("SRE V%1").arg(QCoreApplication::applicationVersion());

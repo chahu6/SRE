@@ -18,6 +18,8 @@ ClientDialog::ClientDialog(Client* client, QWidget *parent)
     setStyleSheet(QString(".ClientDialog{background-color:%1;}").arg("rgb(43,46,56)"));
     setWindowTitle(tr("远程控制"));
 
+    connect(mClient, &Client::setImage, this, &ClientDialog::onSetImage);
+
     initUi();
 }
 
@@ -30,4 +32,20 @@ void ClientDialog::initUi()
     imageLabel = new QLabel(this);
     imageLabel->setStyleSheet(".QLabel{background-color:rgb(255,0,0)}");
     mainVLayout->addWidget(imageLabel);
+}
+
+void ClientDialog::onSetImage(QImage image)
+{
+    //    update(); //调用update将执行 paintEvent函数
+    int scaled_h = imageLabel->height();
+    int scaled_w = int(float(scaled_h) * float(image.width())/float(image.height()));
+
+    QImage scaled_image = image.scaled(scaled_w, scaled_h, Qt::IgnoreAspectRatio);
+
+    //    qDebug()<<"RecordWidget::onSetImage width="<<this->width()<<",height="<<this->height()<<
+    //              ",image.width="<<image.width()<<",image.height="<<image.height()<<
+    //              ",scaled_image.width="<<scaled_image.width()<<",scaled_image.height="<<scaled_image.height();
+
+    QPixmap pixmap = QPixmap::fromImage(scaled_image);
+    imageLabel->setPixmap(pixmap);
 }
